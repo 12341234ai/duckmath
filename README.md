@@ -1,10 +1,10 @@
 <img src="https://duckmath.org/assets/img/duck.webp" width="60px"  align="left" />
 
-# DuckMath.org — Actually Unblocked Games
+# Webbed Web Math.org — Actually Unblocked Games
 
-**1,000,000+ active users since 2022** — DuckMath.org is a fast, lightweight unblocked games platform focused on accessibility, safety, and a social gaming experience for players everywhere.
+**1,000,000+ active users since 2022** — Webbed Web Math.org is a fast, lightweight unblocked games platform focused on accessibility, safety, and a social gaming experience for players everywhere.
 
-> Short description: DuckMath.org hosts 250+ browser games, updates daily, and provides features like leaderboards, an in-site economy (coins), a seasonal battlepass, cloaking tools, and multiple proxy integration options so you can play from a school or work network.
+> Short description: Webbed Web Math.org hosts 250+ browser games, updates daily, and provides features like leaderboards, an in-site economy (coins), a seasonal battlepass, cloaking tools, and multiple proxy integration options so you can play from a school or work network.
 
 ---
 
@@ -32,7 +32,7 @@
 
 ## About
 
-DuckMath.org was built to make high-quality browser games available to everyone — even behind restrictive filters. We combine a large playable catalog with community features (leaderboards, coins, battlepasses) and a small footprint so pages load fast on school and low-end devices.
+Webbed Web Math.org was built to make high-quality browser games available to everyone — even behind restrictive filters. We combine a large playable catalog with community features (leaderboards, coins, battlepasses) and a small footprint so pages load fast on school and low-end devices.
 
 We update the catalog daily and add new community features regularly — the current site lists \~250+ games across categories like Action, Puzzle, Multiplayer, Retro, and Indie.
 
@@ -301,7 +301,7 @@ We update the catalog daily and add new community features regularly — the cur
 
 ### Leaderboard & Score Verification
 
-A fully featured leaderboard lets players submit screenshots and claim high scores. Submissions go through a lightweight verification flow handled by the DuckMath moderation team to keep cheat submissions low and maintain fair competition.
+A fully featured leaderboard lets players submit screenshots and claim high scores. Submissions go through a lightweight verification flow handled by the Webbed Web Math moderation team to keep cheat submissions low and maintain fair competition.
 
 - Upload screenshot proof when submitting a score
 - Manual verification queue + automated checks (file metadata, timestamp, visual heuristics)
@@ -325,7 +325,7 @@ Players earn coins while playing and can spend them in the site shop for cosmeti
 
 ### Battlepass & Seasons
 
-Inspired by popular seasonal systems, DuckMath’s Battlepass runs in seasons (current season: **Medieval Times**) where players earn XP to unlock rewards.
+Inspired by popular seasonal systems, Webbed Web Math’s Battlepass runs in seasons (current season: **Medieval Times**) where players earn XP to unlock rewards.
 
 - Season XP earned through playing and completing challenges
 - Free and premium reward tracks (premium items purchasable with coins)
@@ -341,7 +341,7 @@ A curated library of browser-friendly games (HTML5, WebGL, iframe wrappers for s
 
 ### Proxies & Cloak Mode
 
-DuckMath integrates multiple trusted proxy backends (holyunblocker, rammerhead, ultra violet web proxy) so players can access content from networks that would otherwise block the target domains.
+Webbed Web Math integrates multiple trusted proxy backends (holyunblocker, rammerhead, ultra violet web proxy) so players can access content from networks that would otherwise block the target domains.
 
 - Pick different proxy backends to improve reach and reduce downtime
 - Cloak Mode: change your browser tab title and favicon to look like a classroom page (example: Google Classroom or about\:blank) for discreet browsing
@@ -365,7 +365,7 @@ We embed Discord chat using widgetbot.io so players can join in-site chat withou
 
 You can easily make your own unblocked website in school and get people to use it:
 
-1. Copy DuckMath.org Code (Fork the repository):
+1. Copy Webbed Web Math.org Code (Fork the repository):
 
 go to https://github.com/duckmath/duckmath.github.io and click fork
 

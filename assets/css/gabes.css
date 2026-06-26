@@ -59,24 +59,23 @@
 }
 
 .button1 {
-  background-color: #fff;
-  color: #000;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
   margin-top: -5px;
+  box-shadow: 0 5px 18px rgba(59, 130, 246, 0.14);
 }
 
 .button2 {
-  background-color: #ff0000;
+  background-color: var(--accent-color);
   color: #fff;
   letter-spacing: -1px;
+  box-shadow: 0 5px 18px rgba(59, 130, 246, 0.2);
 }
 
 .button3 {
-  /*
-    ? I chose 2 random colors (which can be changed), but imo it looks better with fewer colors
-    ! it looks better as an animation with a maximum of 3 separate colors
-  */
-  background: linear-gradient(90deg, #f3f520, #59d102, #f3f520);
+  background: linear-gradient(90deg, #8fd5ff, #5dbbff, #8fd5ff);
   background-size: 400%;
+  color: #0f2f4f;
   animation: animation 7s cubic-bezier(0.75, 0.75, 0.75, 0.75) infinite;
 }
 

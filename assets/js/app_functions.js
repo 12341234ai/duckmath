@@ -1,85 +1,142 @@
 const supabaseUrl = "https://hqlgppguxhqeaonjzinv.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxbGdwcGd1eGhxZWFvbmp6aW52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI2MjYwNDQsImV4cCI6MjA0ODIwMjA0NH0.4LuWk4qxp0NRZ5_erEIJq5BHq5qZiSE4zTUFS1ioZw8";
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+let supabaseClient = null;
+
+try {
+  if (window.supabase && typeof window.supabase.createClient === "function") {
+    supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+  }
+} catch (error) {
+  console.warn("Supabase unavailable; using local fallback data.", error);
+}
 
 function getDescriptionFromMarkdown(markdown) {
-  // markdown will come in like
-  // ## Description
-  // ****
-  // ## Creator
-  // so cut off the first two lines and return the rest
-  let built = markdown.split("## Description")[1];
-  built = built.split("## Creator")[0];
-  return built.replaceAll("\n", "");
+  if (!markdown || typeof markdown !== "string") {
+    return "";
+  }
+
+  const descriptionSection = markdown.split("## Description");
+  if (descriptionSection[1]) {
+    const creatorSection = descriptionSection[1].split("## Creator")[0];
+    return creatorSection.replace(/\n+/g, " ").trim();
+  }
+
+  return markdown.replace(/\n+/g, " ").trim();
 }
 
-function create_in_article_ad() {
-  /**
-   * <div class="ad">
-          <ins
-            class="adsbygoogle"
-            style="display: block"
-            data-ad-client="ca-pub-8362959866002557"
-            data-ad-slot="8239998772"
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-          ></ins>
-          <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-          </script>
-        </div>
-   */
-  const adDiv = document.createElement("div");
-  adDiv.className = "ad";
-  const ins = document.createElement("ins");
-  ins.className = "adsbygoogle";
-  ins.style.display = "block";
-  ins.setAttribute("data-ad-client", "ca-pub-8362959866002557");
-  ins.setAttribute("data-ad-slot", "8239998772");
-  ins.setAttribute("data-ad-format", "auto");
-  ins.setAttribute("data-full-width-responsive", "true");
-  const script = document.createElement("script");
-  script.innerHTML = "(adsbygoogle = window.adsbygoogle || []).push({});";
-  adDiv.appendChild(ins);
-  adDiv.appendChild(script);
-  return adDiv;
+function normalizeTitle(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
+
+function normalizeAppEntry(app) {
+  if (!app || typeof app !== "object") {
+    return null;
+  }
+
+  const categories = Array.isArray(app.categories)
+    ? app.categories
+    : typeof app.categories === "string"
+    ? app.categories.split(/\s+/).filter(Boolean)
+    : [];
+
+  return {
+    ...app,
+    title: app.title || app.slug || app.name || "",
+    icon: app.icon || app.image || "",
+    desc: app.desc || app.description || "",
+    link: app.link || app.url || "",
+    categories,
+  };
+}
+
 const APP_VER = "apps11";
 const REQUERY_TIME = 5; // in days
-async function get_all_apps() {
-  const date_last_queryed = JSON.parse(localStorage.getItem("dlq"));
-  const local_apps = JSON.parse(localStorage.getItem(APP_VER));
-  // console.log((new Date().getTime() - date_last_queryed) / 1000 / 60 / 60 / 24);
 
-  const onLocalHost = false; // window.location.includes("localhost");
-  if (
-    !onLocalHost &&
-    Array.isArray(local_apps) &&
-    date_last_queryed &&
-    (new Date().getTime() - date_last_queryed) / 1000 / 60 / 60 / 24 <=
-      REQUERY_TIME &&
-    local_apps?.[0] !== null
-  ) {
-    console.log("Using local apps data.");
-    return local_apps;
-  } else {
-    console.log("Fetching apps data from Supabase.");
-    const { data, error } = await supabaseClient.rpc(
-      "get_apps_ordered_by_title"
-    );
-    if (error) {
-      console.error("Error fetching apps:", error);
-      window.alert(
-        "Error fetching apps. Please try again later. If the problem persists, please contact support."
-      );
-      return null;
+function readCachedApps() {
+  try {
+    const date_last_queryed = JSON.parse(localStorage.getItem("dlq") || "null");
+    const local_apps = JSON.parse(localStorage.getItem(APP_VER) || "null");
+
+    if (
+      Array.isArray(local_apps) &&
+      local_apps.length > 0 &&
+      date_last_queryed &&
+      (new Date().getTime() - date_last_queryed) / 1000 / 60 / 60 / 24 <=
+        REQUERY_TIME
+    ) {
+      return local_apps
+        .map(normalizeAppEntry)
+        .filter(Boolean);
     }
-    // Store the data in local storage with a timestamp
-    localStorage.setItem(APP_VER, JSON.stringify(data));
-    localStorage.setItem("dlq", JSON.stringify(new Date().getTime()));
-    return data;
+  } catch (error) {
+    console.warn("Unable to read cached app data.", error);
   }
+
+  return null;
+}
+
+async function loadBackupApps() {
+  try {
+    const response = await fetch("/backup_classes.json", { cache: "no-store" });
+    if (!response.ok) {
+      return [];
+    }
+
+    const payload = await response.json();
+    if (!Array.isArray(payload)) {
+      return [];
+    }
+
+    return payload.map(normalizeAppEntry).filter(Boolean);
+  } catch (error) {
+    console.warn("Backup app data could not be loaded.", error);
+    return [];
+  }
+}
+
+async function get_all_apps() {
+  const cachedApps = readCachedApps();
+  if (Array.isArray(cachedApps) && cachedApps.length > 0) {
+    console.log("Using local apps data.");
+    return cachedApps;
+  }
+
+  const backupApps = await loadBackupApps();
+  if (Array.isArray(backupApps) && backupApps.length > 0) {
+    try {
+      localStorage.setItem(APP_VER, JSON.stringify(backupApps));
+      localStorage.setItem("dlq", JSON.stringify(new Date().getTime()));
+    } catch (error) {
+      console.warn("Unable to cache backup app data.", error);
+    }
+    console.log("Using backup apps data.");
+    return backupApps;
+  }
+
+  if (supabaseClient) {
+    try {
+      console.log("Fetching apps data from Supabase.");
+      const { data, error } = await supabaseClient.rpc(
+        "get_apps_ordered_by_title"
+      );
+      if (!error && Array.isArray(data)) {
+        const normalized = data.map(normalizeAppEntry).filter(Boolean);
+        if (normalized.length > 0) {
+          localStorage.setItem(APP_VER, JSON.stringify(normalized));
+          localStorage.setItem("dlq", JSON.stringify(new Date().getTime()));
+          return normalized;
+        }
+      }
+    } catch (error) {
+      console.warn("Supabase app fetch failed.", error);
+    }
+  }
+
+  return [];
 }
 
 function remove_all_children(element) {
@@ -114,8 +171,12 @@ async function list_all_apps(element) {
      */
     const app = query[i];
     const appTitle = app.title;
-    const appCategory = app.categories;
-    const appId = app.id;
+    const appCategories = Array.isArray(app.categories)
+      ? app.categories
+      : typeof app.categories === "string"
+      ? app.categories.split(/\s+/).filter(Boolean)
+      : [];
+    const appCategory = appCategories.join(" ") || "Other";
     const appIcon = app.icon;
 
     // now create the element
@@ -139,10 +200,6 @@ async function list_all_apps(element) {
     a.appendChild(figcaption);
 
     element.appendChild(a);
-    if (i % 40 === 0 && i !== 0) {
-      const adDiv = create_in_article_ad();
-      element.appendChild(adDiv);
-    }
   }
 }
 
@@ -154,7 +211,7 @@ async function get_app_by_title(title) {
     return null;
   }
   const app = apps.find(
-    (app) => app.title.toLowerCase() === title.toLowerCase()
+    (app) => normalizeTitle(app.title) === normalizeTitle(title)
   );
   if (!app) {
     console.error("App not found:", title);
@@ -260,7 +317,7 @@ async function hydrateAppPage() {
 
   const canonicalLink = document.createElement("link");
   canonicalLink.rel = "canonical";
-  canonicalLink.href = `https://duckmath.org/g4m3s/?title=${appData.title}`;
+  canonicalLink.href = `/g4m3s/?title=${appData.title}`;
   document.head.appendChild(canonicalLink);
 
   window.document.title =
@@ -336,9 +393,11 @@ async function hydrateAppPage() {
     }
   }
 
-  document
-    .getElementById("game-title")
-    .prepend(appData.title.replaceAll("-", " ") + " Unblocked");
+  const titleText = `${(appData.title || "Game").replaceAll("-", " ")} Unblocked`;
+  const gameTitleEl = document.getElementById("game-title");
+  if (gameTitleEl) {
+    gameTitleEl.textContent = titleText;
+  }
 
   // Add small text under title about .top_message property
   if (appData?.top_message) {
@@ -350,12 +409,7 @@ async function hydrateAppPage() {
     infoText.textContent = appData?.top_message;
     titleElement.appendChild(infoText);
   }
-  const GAMES_PAGE_URL = "https://maddox05.github.io/basic-ruffle-player";
-  let app_link = appData.link;
-  if (window.location.hostname === "duckmath.org") {
-    app_link = app_link.replace(GAMES_PAGE_URL, "https://db.duckmath.org");
-  }
-  document.getElementById("gameFrame").src = app_link;
+  document.getElementById("gameFrame").src = appData.link;
 
   // Populate minimal related games (3 items) after fullscreen button
   try {

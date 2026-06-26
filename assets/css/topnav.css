@@ -21,6 +21,21 @@
   transition: all 0.2s cubic-bezier(0.05, 0.75, 0.12, 0.97);
 }
 
+.topnav .duckmath-header-link {
+  float: none;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+}
+
+.topnav .duckmath-header-link:hover {
+  background: transparent;
+  transform: none;
+}
+
 .topnav a:link,
 .topnav a:visited {
   color: #fff;

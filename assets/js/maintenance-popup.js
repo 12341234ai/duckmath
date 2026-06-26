@@ -46,7 +46,7 @@
                     margin: 1.5rem 0;
                     color: #555;
                 ">
-                    We're making changes to the site that may cause DuckMath to get b10cked at your school or workplace.
+                    We're making changes to the site that may cause Webbed Web Math to get b10cked at your school or workplace.
                 </p>
                 
                 <p style="

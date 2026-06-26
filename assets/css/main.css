@@ -1,19 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Tilt+Warp&display=swap");
 
 :root {
-  --primary-color: red; /* Deep Blue for primary elements */
-  --secondary-color: red; /* Soft White for secondary elements */
-  --accent-color: red; /* Vibrant Green for accents and buttons */
-  --menu-background: #f2e8cf; /* Muted Navy for the menu background */
-  --body-background: #bc4749; /* Very Light Gray for the body background */
-  --segment-background: red; /* Off-White for card/segment backgrounds */
-  --input-background: red; /* Soft Gray for input fields */
-  --input-border: red; /* Light Blue Gray for input borders */
-  --dropdown-background: red; /* Sky Blue for dropdowns */
+  --primary-color: #2563eb;
+  --secondary-color: #f5fbff;
+  --accent-color: #5dbbff;
+  --menu-background: #dcebff;
+  --body-background: #eef8ff;
+  --segment-background: #ffffff;
+  --input-background: #f8fcff;
+  --input-border: #71bfff;
+  --dropdown-background: #e8f5ff;
 }
 
 body {
-  background-image: url("../img/bg.svg");
+  background-image: linear-gradient(135deg, rgba(255,255,255,0.88), rgba(220,235,255,0.9)), url("../img/bg.svg");
+  background-color: var(--body-background);
   font-family: "Montserrat", sans-serif;
   font-weight: 500;
   font-size: 15px;
@@ -110,8 +111,8 @@ body {
   bottom: 0;
   right: 0;
   padding: 10px;
-  background-color: rgba(255, 255, 255, 0.8);
-  color: #ff0000;
+  background-color: rgba(255, 255, 255, 0.92);
+  color: var(--primary-color);
   font-size: 25px;
   font-weight: 100;
   font-family: "Tilt Warp", "Montserrat", sans-serif;
@@ -153,7 +154,7 @@ body {
 }
 
 .button:hover {
-  background-color: #ff0000;
+  background-color: var(--accent-color);
   color: #fff;
   transform: scale(0.95);
 }
@@ -286,11 +287,6 @@ a:hover {
 .ad {
   width: 100%;
   display: compact;
-}
-
-.adsbygoogle {
-  display: block;
-  text-align: center;
 }
 
 /** Search Bar/Input */
